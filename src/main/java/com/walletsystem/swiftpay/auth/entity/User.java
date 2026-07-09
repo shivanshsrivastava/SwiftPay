@@ -2,7 +2,6 @@ package com.walletsystem.swiftpay.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 
