@@ -13,6 +13,7 @@ import com.walletsystem.swiftpay.common.service.CurrentUserService;
 import com.walletsystem.swiftpay.common.util.TransactionReferenceGenerator;
 import com.walletsystem.swiftpay.ledger.model.BalanceUpdateResult;
 import com.walletsystem.swiftpay.ledger.service.LedgerService;
+import com.walletsystem.swiftpay.notification.service.NotificationService;
 import com.walletsystem.swiftpay.security.util.SecurityUtils;
 import com.walletsystem.swiftpay.transaction.dto.request.TransferRequest;
 import com.walletsystem.swiftpay.transaction.dto.response.TransactionDetailsResponse;
@@ -48,6 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final LedgerService ledgerService;
     private final CurrentUserService currentUserService;
     private final AuditService auditService;
+    private final NotificationService notificationService;
 
     // The below code is correct just commenting it out for cleaner structure and separation of concern
 
@@ -191,8 +193,15 @@ public class TransactionServiceImpl implements TransactionService {
 
         );
 
+            notificationService.sendTransferNotification(
+                    transaction,
+                    senderWallet,
+                    receiverWallet
+            );
+
 
         return transactionMapper.toTransferResponse(transaction);
+
     } catch (RuntimeException ex){
             auditService.recordAudit(
                     AuditAction.TRANSFER,

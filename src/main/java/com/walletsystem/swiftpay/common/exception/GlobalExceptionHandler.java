@@ -201,4 +201,28 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(
+            IdempotencyException.class
+    )
+    public ResponseEntity<ErrorResponse>
+    handleIdempotencyException(
+            IdempotencyException ex
+    ) {
+
+        ErrorResponse response = ErrorResponse.builder()
+                .success(false)
+                .message(
+                        ex.getMessage()
+                )
+                .status(HttpStatus.CONFLICT.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(
+                response,
+                HttpStatus.CONFLICT
+        );
+    }
+
+
 }
